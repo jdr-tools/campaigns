@@ -4,7 +4,7 @@ RSpec.shared_examples 'POST /:id/files/:file_id/permissions' do
   let!(:player) { create(:account, username: 'player account', email: 'player@account.fr') }
   let!(:invitation) { create(:accepted_invitation, campaign: campaign, account: player) }
 
-  before do
+  before :each do
     post "/campaigns/#{campaign.id.to_s}/files", {
       session_id: session.token,
       app_key: 'test_key',
@@ -16,11 +16,11 @@ RSpec.shared_examples 'POST /:id/files/:file_id/permissions' do
 
   describe 'POST /:id/files/:file_id/permissions' do
     describe 'Nominal case' do
-      # Don't put a "!" character here
+      # Don't put a "!" character here, we want to declare it only on use.
       let(:file) { campaign.files.where(name: 'test_permissions.txt').first }
       before do
         url = "/campaigns/#{campaign.id.to_s}/files/#{file.id.to_s}/permissions"
-        post url, {session_id: session.id.to_s, token: 'test_token', app_key: 'test_key', invitation_id: invitation.id.to_s, level: 'read'}
+        post url, {session_id: session.token, token: 'test_token', app_key: 'test_key', invitation_id: invitation.id.to_s, level: 'read'}
       end
       it 'Returns a Created (201) status code' do
         expect(last_response.status).to be 201
@@ -29,7 +29,7 @@ RSpec.shared_examples 'POST /:id/files/:file_id/permissions' do
         expect(last_response.body).to include_json({message: 'created'})
       end
       it 'Has created the permission' do
-        expect(file.permissions.count).to be 1
+        expect(file.permissions.where(enum_level: :read).count).to be 1
       end
       it 'Has created the permission with the correct user' do
         expect(file.permissions.last.invitation.account.username).to eq 'player account'

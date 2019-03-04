@@ -50,7 +50,10 @@ module Controllers
 
 
     declare_route 'post', '/:id/files/:file_id/permissions' do
+      _session = check_session('permissions_creation')
       check_presence('level', 'invitation_id', route: 'permissions_creation')
+
+      ::Services::Files.instance.grant_permission(params['file_id'], params['level'], params['invitation_id'])
 
       halt 201, {message: 'created'}.to_json
     end

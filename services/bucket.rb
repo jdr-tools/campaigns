@@ -17,6 +17,7 @@ module Services
     def initialize
       @aws_client = Aws::S3::Client.new
       @aws_bucket = load_buckets_config['campaigns'][ENV['RACK_ENV']]
+
       @logger = Logger.new(STDOUT)
       create_bucket_if_not_exists
     end

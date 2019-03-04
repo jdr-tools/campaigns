@@ -72,6 +72,12 @@ module Services
       end
     end
 
+    def grant_permission(file_id, level, invitation_id)
+      file = Arkaan::Campaigns::File.where(id: file_id).first
+      invitation = file.campaign.invitations.where(id: invitation_id).first
+      return Arkaan::Campaigns::Files::Permission.create(file: file, invitation: invitation, level: level.to_sym)
+    end
+
     # Parses the MIME type from the file content given with a format : data:<mime_type>;base64,<content>
     # @param content [String] the string representation of the content of the file.
     # @return [String] the MIME type of the file (eq: "plain/text").
