@@ -47,5 +47,12 @@ module Controllers
         custom_error 404, 'files_deletion.file_id.unknown'
       end
     end
+
+
+    declare_route 'post', '/:id/files/:file_id/permissions' do
+      check_presence('level', 'invitation_id', route: 'permissions_creation')
+
+      halt 201, {message: 'created'}.to_json
+    end
   end
 end

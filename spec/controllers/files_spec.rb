@@ -25,4 +25,7 @@ RSpec.describe Controllers::Files do
 
   # rspec spec/controllers/files_spec.rb[1:4]
   include_examples 'GET /:id/files/:file_id'
+
+  # rspec spec/controllers/files_spec.rb[1:5]
+  include_examples 'POST /:id/files/:file_id/permissions'
 end
