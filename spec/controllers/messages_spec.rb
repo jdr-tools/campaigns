@@ -1,4 +1,4 @@
-RSpec.describe Controllers::Campaigns do
+RSpec.describe Controllers::Messages do
 
   before :each do
     DatabaseCleaner.clean
@@ -9,15 +9,18 @@ RSpec.describe Controllers::Campaigns do
   let!(:application) { create(:application, creator: account) }
 
   def app
-    Controllers::Campaigns.new
+    Controllers::Messages.new
   end
 
-  # rspec spec/controllers/campaigns_spec.rb[1:8]
+  # rspec spec/controllers/messages_spec.rb[1:1]
   include_examples 'GET /:id/messages'
 
-  # rspec spec/controllers/campaigns_spec.rb[1:9]
+  # rspec spec/controllers/messages_spec.rb[1:2]
   include_examples 'POST /:id/messages'
 
-  # rspec spec/controllers/campaigns_spec.rb[1:10]
+  # rspec spec/controllers/messages_spec.rb[1:3]
   include_examples 'POST /:id/commands'
+
+  # rspec spec/controllers/messages_spec.rb[1:4]
+  include_examples 'DELETE /:id/messages/:message_id'
 end
