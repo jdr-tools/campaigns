@@ -78,5 +78,34 @@ module Services
     def parse_mime_type(content)
       return content.split(';', 2).first.split(':', 2).last
     end
+
+    def update_permissions(file, permissions)
+      _permissions = parse_permissions(permissions)
+      file.permissions.where(:enum_level.ne => :creator).each do |tmp_perm|
+        still_existing = _permissions.select { |p| p.invitation.id == tmp_perm.invitation.id }
+        tmp_perm.delete if still_existing.count == 0
+      end
+      _permissions.each do |tmp_perm|
+        existing = file.permissions.where(invitation_id: tmp_perm[:invitation].id).first
+        if existing.nil?
+          Arkaan::Campaigns::Files::Permission.create(file: file, invitation: tmp_perm[:invitation], enum_level: tmp_perm[:level])
+        else
+          existing.update_attribute(:level, tmp_perm[:level])
+        end
+      end
+    end
+
+    def parse_permissions(permissions)
+      parsed_permissions = []
+      permissions.each do |permission|
+        if permission.is_a?(Hash) && permission.has_key?('invitation_id')
+          invitation = Arkaan::Campaigns::Invitation.where(id: permission['invitation_id']).first
+          raise Services::Exceptions::UnknownInvitationId.new if invitation.nil?
+          level = permission['level'].to_sym rescue :read
+          parsed_permissions << {invitation: invitation, level: level}
+        end
+      end
+      return parsed_permissions
+    end
   end
 end

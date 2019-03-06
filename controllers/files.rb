@@ -57,22 +57,13 @@ module Controllers
       if file.nil?
         custom_error 404, 'permissions_creation.file_id.unknown'
       elsif params.has_key?('permissions')
-        params['permissions'].each do |permission|
-          if !permission.has_key?('invitation_id')
-            custom_error 400, 'files_edition.invitation_id.required'
-          else
-            invitation = Arkaan::Campaigns::Invitation.where(id: permission['invitation_id']).first
-
-            if invitation.nil?
-              custom_error 404, 'permissions_creation.invitation_id.unknown'
-            else
-              level = permission.has_key?('level') ? permission['level'].to_sym : :read
-              Arkaan::Campaigns::Files::Permission.create(file: file, invitation: invitation, enum_level: level)
-              halt 201, {message: 'created'}.to_json
-            end
-          end
+        begin
+          Services::Files.instance.update_permissions(file, params['permissions'])
+        rescue Services::Exceptions::UnknownInvitationId
+          custom_error 404, 'permissions_creation.invitation_id.unknown'
         end
       end
+      halt 200, {message: 'updated'}.to_json
     end
   end
 end
