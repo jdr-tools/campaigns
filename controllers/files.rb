@@ -49,21 +49,29 @@ module Controllers
     end
 
 
-    declare_route 'post', '/:id/files/:file_id/permissions' do
+    declare_route 'put', '/:id/files/:file_id' do
       _session = check_session('permissions_creation')
       _campaign = get_campaign_for(_session, 'permissions_creation', strict: true)
-      check_presence('invitation_id', route: 'permissions_creation')
 
       file = Arkaan::Campaigns::File.where(id: params['file_id']).first
-      invitation = Arkaan::Campaigns::Invitation.where(id: params['invitation_id']).first
-
       if file.nil?
         custom_error 404, 'permissions_creation.file_id.unknown'
-      elsif invitation.nil?
-        custom_error 404, 'permissions_creation.invitation_id.unknown'
-      else
-        Arkaan::Campaigns::Files::Permission.create(file: file, invitation: invitation, enum_level: :read)
-        halt 201, {message: 'created'}.to_json
+      elsif params.has_key?('permissions')
+        params['permissions'].each do |permission|
+          if !permission.has_key?('invitation_id')
+            custom_error 400, 'files_edition.invitation_id.required'
+          else
+            invitation = Arkaan::Campaigns::Invitation.where(id: permission['invitation_id']).first
+
+            if invitation.nil?
+              custom_error 404, 'permissions_creation.invitation_id.unknown'
+            else
+              level = permission.has_key?('level') ? permission['level'].to_sym : :read
+              Arkaan::Campaigns::Files::Permission.create(file: file, invitation: invitation, enum_level: level)
+              halt 201, {message: 'created'}.to_json
+            end
+          end
+        end
       end
     end
   end
