@@ -79,6 +79,12 @@ module Services
       return content.split(';', 2).first.split(':', 2).last
     end
 
+    # Updates the permissions on a file, this is done in two steps :
+    # 1. Remove the permissions that are not given in the update permissions parameters
+    # 2. Add the permissions that does not already exist in the file but are given in the hash.
+    #
+    # @param file [Arkaan::Campaigns::File] the file to update the permissions of.
+    # @param permissions [Array<Hash>] an array of permissions, each permission is a hash responding to the :invitation and :level methods.
     def update_permissions(file, permissions)
       _permissions = parse_permissions(permissions)
       file.permissions.where(:enum_level.ne => :creator).each do |tmp_perm|
@@ -95,6 +101,9 @@ module Services
       end
     end
 
+    # Parses the permissions, only returning the valid ones, aand transforming the invitations IDs in invitations.
+    # @param permissions [Array<Hash>] the raw permissions to filter and transform.
+    # @return [Array<Hash>] an array of hashes responding to the :invitation and :level methods.
     def parse_permissions(permissions)
       parsed_permissions = []
       permissions.each do |permission|
