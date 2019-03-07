@@ -1,7 +1,7 @@
 RSpec.shared_examples 'GET /:id/messages' do
   describe 'GET /:id/messages' do
     let!(:campaign) { create(:campaign, creator: account) }
-    let!(:another_account) { create(:another_account) }
+    let!(:another_account) { create(:account) }
     let!(:session) { create(:session, account: another_account) }
     let!(:chat_invitation) { create(:accepted_invitation, campaign: campaign, account: another_account) }
     let!(:message) { create(:message, player: chat_invitation, campaign: campaign) }

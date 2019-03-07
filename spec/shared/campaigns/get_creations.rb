@@ -16,7 +16,7 @@ RSpec.shared_examples 'GET /creations' do
         expect(last_response.status).to be 200
       end
       it 'Returns the correct body' do
-        expect(JSON.parse(last_response.body)).to eq({
+        expect(last_response.body).to include_json({
           'count' => 2,
           'items' => [
             {
@@ -25,7 +25,7 @@ RSpec.shared_examples 'GET /creations' do
               'description' => 'A longer description of the campaign',
               'creator' => {
                 'id' => account.id.to_s,
-                'username' => 'Babausse'
+                'username' => account.username
               },
               'is_private' => true,
               'max_players' => 5,
@@ -39,7 +39,7 @@ RSpec.shared_examples 'GET /creations' do
               'description' => 'A longer description of the campaign',
               'creator' => {
                 'id' => account.id.to_s,
-                'username' => 'Babausse'
+                'username' => account.username
               },
               'is_private' => false,
               'max_players' => 5,

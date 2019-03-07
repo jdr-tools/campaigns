@@ -14,6 +14,7 @@ group :developement, :production do
 end
 
 group :development, :test do
+  gem 'faker'                  , '1.9.3'
   gem 'pry'                    , '0.11.1'
   gem 'rack-test'              , '0.7.0' , require: 'rack/test'
   gem 'rspec'                  , '3.6.0'

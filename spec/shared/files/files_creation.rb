@@ -1,24 +1,24 @@
 RSpec.shared_examples 'POST /:id/files' do
   describe 'POST /:id/files' do
 
-    let!(:file_service) { ::Services::Files.instance }
-    let!(:bucket_service) { ::Services::Bucket.instance }
-
     before :each do
-      bucket_service.create_bucket_if_not_exists
+      Services::Bucket.instance.create_bucket_if_not_exists
     end
 
-    let!(:base_64_content) {'data:text/plain;base64,dGVzdApzYXV0IGRlIGxpZ25lIGV0IGVzcGFjZXM='}
+    let(:url) { "/campaigns/#{campaign.id.to_s}/files" }
+
+    let!(:campaign) { create(:campaign, creator: account) }
+    let!(:content) {'data:text/plain;base64,dGVzdApzYXV0IGRlIGxpZ25lIGV0IGVzcGFjZXM='}
     let!(:invalid_content) {'data:text/rtf;base64,dGVzdApzYXV0IGRlIGxpZ25lIGV0IGVzcGFjZXMK'}
     
     describe 'Nominal case' do
       before do
-        post "/campaigns/#{campaign.id.to_s}/files", {
+        post url, {
           session_id: session.token,
           app_key: 'test_key',
           token: 'test_token',
           name: 'test.txt',
-          content: base_64_content
+          content: content
         }
       end
       it 'Returns a OK (200) status code' do
@@ -45,10 +45,10 @@ RSpec.shared_examples 'POST /:id/files' do
 
       describe 'AWS created file' do
         let!(:file_id) { JSON.parse(last_response.body)['id'] }
-        let(:content) { file_service.get_campaign_file(campaign, file_id) }
+        let(:file_content) { Services::Files.instance.get_campaign_file(campaign, file_id) }
 
         it 'has the correct content' do
-          expect(content).to eq base_64_content
+          expect(file_content).to eq content
         end
       end
     end
@@ -58,13 +58,13 @@ RSpec.shared_examples 'POST /:id/files' do
     describe :errors do
 
       before :all do
-        ::Services::Bucket.instance.remove_all
+        Services::Bucket.instance.remove_all
       end
 
       describe '400 errors' do
         describe 'file content not given' do
           before do
-            post "/campaigns/#{campaign.id.to_s}/files",{
+            post url,{
               session_id: session.token,
               app_key: 'test_key',
               token: 'test_token',
@@ -82,17 +82,17 @@ RSpec.shared_examples 'POST /:id/files' do
             })
           end
           it 'has not created the corresponding file' do
-            expect(bucket_service.file_exists?(campaign, 'test.txt'))
+            expect(Services::Bucket.instance.file_exists?(campaign, 'test.txt'))
           end
         end
         describe 'filename not given' do
           before do
-            post "/campaigns/#{campaign.id.to_s}/files", {
+            post url, {
               session_id: session.token,
               app_key: 'test_key',
               token: 'test_token',
               size: 30,
-              content: base_64_content
+              content: content
             }
           end
           it 'Returns a Bad request (400) status code' do
@@ -106,12 +106,12 @@ RSpec.shared_examples 'POST /:id/files' do
             })
           end
           it 'has not created the corresponding file' do
-            expect(bucket_service.file_exists?(campaign, 'test.txt'))
+            expect(Services::Bucket.instance.file_exists?(campaign, 'test.txt'))
           end
         end
         describe 'invalid MIME type' do
           before do
-            post "/campaigns/#{campaign.id.to_s}/files", {
+            post url, {
               session_id: session.token,
               app_key: 'test_key',
               token: 'test_token',
@@ -131,24 +131,24 @@ RSpec.shared_examples 'POST /:id/files' do
             })
           end
           it 'has not created the corresponding file' do
-            expect(bucket_service.file_exists?(campaign, 'test.txt'))
+            expect(Services::Bucket.instance.file_exists?(campaign, 'test.txt'))
           end
         end
       end
 
       describe '403 errors' do
         describe 'user not creator' do
-          let!(:other_account) { create(:account, username: 'Babaussine', email: 'test@other.com') }
+          let!(:other_account) { create(:account) }
           let!(:invitation) { create(:accepted_invitation, campaign: campaign, account: other_account) }
-          let!(:other_session) { create(:session, token: 'any_other_token', account: other_account) }
+          let!(:other_session) { create(:session, account: other_account) }
 
           before do
-            post "/campaigns/#{campaign.id.to_s}/files", {
+            post url, {
               session_id: other_session.token,
               app_key: 'test_key',
               token: 'test_token',
               name: 'test.txt',
-              content: base_64_content
+              content: content
             }
           end
           it 'Returns a Forbidden (403) status code' do
@@ -162,7 +162,7 @@ RSpec.shared_examples 'POST /:id/files' do
             })
           end
           it 'has not created the corresponding file' do
-            expect(bucket_service.file_exists?(campaign, 'test.txt'))
+            expect(Services::Bucket.instance.file_exists?(campaign, 'test.txt'))
           end
         end
       end

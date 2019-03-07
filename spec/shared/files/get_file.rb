@@ -1,25 +1,14 @@
 RSpec.shared_examples 'GET /:id/files/:file_id' do
   describe 'GET /:id/files/:file_id' do
 
-    before :each do
-      post "/campaigns/#{campaign.id.to_s}/files", {
-        session_id: session.token,
-        app_key: 'test_key',
-        token: 'test_token',
-        name: 'test.txt',
-        content: base_64_content
-      }
-    end
+    let!(:campaign) { create(:campaign, creator: account) }
+    let!(:content) {'data:text/plain;base64,dGVzdApzYXV0IGRlIGxpZ25lIGV0IGVzcGFjZXMK'}
+    let!(:file) { Services::Files.instance.create(session, campaign, 'test.txt', content) }
 
     describe 'When the file exists' do
-      let!(:base_64_content) {'data:text/plain;base64,dGVzdApzYXV0IGRlIGxpZ25lIGV0IGVzcGFjZXMK'}
-      let!(:file_id) {
-        campaign.reload
-        campaign.files.first.id.to_s
-      }
 
       after :each do
-        delete "/campaigns/#{campaign.id.to_s}/files/#{file_id}", {
+        delete "/campaigns/#{campaign.id}/files/#{file.id}", {
           session_id: session.token,
           app_key: 'test_key',
           token: 'test_token'
@@ -28,7 +17,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
 
       describe 'Nominal case' do
         before do
-          get "/campaigns/#{campaign.id.to_s}/files/#{file_id}", {
+          get "/campaigns/#{campaign.id}/files/#{file.id}", {
             session_id: session.token,
             app_key: 'test_key',
             token: 'test_token'
@@ -38,7 +27,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
           expect(last_response.status).to be 200
         end
         it 'Returns the correct body' do
-          expect(last_response.body).to eq base_64_content
+          expect(last_response.body).to eq content
         end
       end
 
@@ -51,7 +40,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
 
           describe 'when the user is not in the campaign' do
             before do
-              get "/campaigns/#{campaign.id.to_s}/files/#{file_id}", {
+              get "/campaigns/#{campaign.id}/files/#{file.id}", {
                 session_id: other_session.token,
                 app_key: 'test_key',
                 token: 'test_token'
@@ -72,7 +61,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
         describe '404 errors' do
           describe 'When the file is not found' do
             before do
-              get "/campaigns/#{campaign.id.to_s}/files/unknown_file_id", {
+              get "/campaigns/#{campaign.id}/files/unknown_file_id", {
                 session_id: session.token,
                 app_key: 'test_key',
                 token: 'test_token'
