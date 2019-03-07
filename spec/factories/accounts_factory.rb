@@ -1,17 +1,12 @@
 FactoryGirl.define do
   factory :empty_account, class: Arkaan::Account do
     factory :account do
-      username 'Babausse'
+      username { Faker::Internet.unique.username(5..10) }
       password 'password'
       password_confirmation 'password'
-      email 'machin@test.com'
-      lastname 'Courtois'
-      firstname 'Vincent'
-
-      factory :another_account do
-        username 'Another'
-        email 'another@maail.com'
-      end
+      email { Faker::Internet.unique.safe_email }
+      lastname { Faker::Name.last_name }
+      firstname { Faker::Name.first_name }
     end
   end
 end

@@ -12,18 +12,25 @@ module Services
       @bucket = ::Services::Bucket.instance
     end
 
-    # Creates the file in the database, without storing in on Amazon.
+    # Creates the file and stores it in the AWS bucket but does NOT persist it in the database
     # @param session [Arkaan::Authentication::Session] the session of the account creating the file.
     # @param campaign [Arkaan::campaign] the campaign the file will be created in.
-    # @param parameters [Hash] the additionnal parameters, with the :name and :content keys, for the file.
-    def create(session, campaign, parameters)
+    # @param name [String] the name of the file to store.
+    # @param content [String] the base64 content of the file to store.
+    # @return [Arkaan::campaigns::File] the created file in the database, not yet persisted (but the upload has succeeded).
+    def create(session, campaign, name, content)
       invitation = campaign.invitations.where(account: session.account).first
-      return Arkaan::Campaigns::File.new(
-        name: parameters['name'],
-        mime_type: parse_mime_type(parameters['content']),
+      file = Arkaan::Campaigns::File.new({
+        name: name,
+        mime_type: parse_mime_type(content),
         campaign: campaign,
         creator: invitation
-      )
+      })
+      return file if !file.valid?
+      if !store(file, content)
+        raise Arkaan::Utils::Errors.new(action: 'files_creation', field: 'upload', error: 'failed')
+      end
+      return file
     end
 
     # Stores a file, already persisted in the database, on amazon S3.
@@ -125,6 +132,10 @@ module Services
         end
       end
       return parsed_permissions
+    end
+
+    def get(file_id)
+      return Arkaan::Campaigns::File.where(id: file_id).first
     end
   end
 end

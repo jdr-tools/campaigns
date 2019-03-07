@@ -1,12 +1,11 @@
 RSpec.shared_examples 'GET /:id/invitations' do
 
   describe 'GET /:id/invitations' do
-    let!(:acceptation_date) { DateTime.now }
-    let!(:other_account) { create(:account, username: 'Other username', email: 'test@email.com') }
-    let!(:third_account) { create(:account, username: 'Third username', email: 'third@email.com') }
+    let!(:other_account) { create(:account) }
+    let!(:third_account) { create(:account) }
     let!(:campaign) { create(:campaign, creator: account) }
     let!(:pending_invitation) { create(:invitation, account: third_account, campaign: campaign) }
-    let!(:accepted_invitation) { create(:invitation, account: other_account, campaign: campaign, status: :accepted) }
+    let!(:accepted_invitation) { create(:accepted_invitation, account: other_account, campaign: campaign) }
     let!(:session) { create(:session, account: account) }
 
     def app
@@ -15,7 +14,7 @@ RSpec.shared_examples 'GET /:id/invitations' do
 
     describe 'Nominal case' do
       before do
-        get "/campaigns/#{campaign.id.to_s}/invitations", {token: 'test_token', app_key: 'test_key', session_id: session.token}
+        get "/campaigns/#{campaign.id}/invitations", {token: 'test_token', app_key: 'test_key', session_id: session.token}
       end
       it 'Returns a OK (200) status code when correctly returning the invitations' do
         expect(last_response.status).to be 200
@@ -25,17 +24,17 @@ RSpec.shared_examples 'GET /:id/invitations' do
           {
             'id' => campaign.invitations.where(enum_status: :creator).first.id.to_s,
             'status' => 'creator',
-            'username' => 'Babausse'
+            'username' => account.username
           },
           {
             'id' => pending_invitation.id.to_s,
             'status' => 'pending',
-            'username' => 'Third username'
+            'username' => third_account.username
           },
           {
             'id' => accepted_invitation.id.to_s,
             'status' => 'accepted',
-            'username' => 'Other username'
+            'username' => other_account.username
           }
         ])
       end
@@ -46,7 +45,7 @@ RSpec.shared_examples 'GET /:id/invitations' do
     describe '400 errors' do
       describe 'session ID not given' do
         before do
-          get '/campaigns/campaign_id/invitations', {token: 'test_token', app_key: 'test_key'}
+          get "/campaigns/#{campaign.id}/invitations", {token: 'test_token', app_key: 'test_key'}
         end
         it 'Returns a Bad Request (400) status' do
           expect(last_response.status).to be 400
@@ -63,11 +62,11 @@ RSpec.shared_examples 'GET /:id/invitations' do
 
     describe '403 error' do
       describe 'Session ID not allowed' do
-        let!(:another_account) { create(:another_account) }
+        let!(:another_account) { create(:account) }
         let!(:session) { create(:session, account: another_account) }
 
         before do
-          get '/campaigns/campaign_id/invitations', {token: 'test_token', app_key: 'test_key', session_id: session.token}
+          get "/campaigns/#{campaign.id}/invitations", {token: 'test_token', app_key: 'test_key', session_id: session.token}
         end
         it 'Returns a 403 error' do
           expect(last_response.status).to be 403
@@ -103,7 +102,7 @@ RSpec.shared_examples 'GET /:id/invitations' do
         let!(:session) { create(:session, account: account) }
         
         before do
-          get '/campaigns/campaign_id/invitations', {token: 'test_token', app_key: 'test_key', session_id: 'fake_token'}
+          get "/campaigns/#{campaign.id}/invitations", {token: 'test_token', app_key: 'test_key', session_id: 'fake_token'}
         end
         it 'Returns a Not Found (404) status' do
           expect(last_response.status).to be 404

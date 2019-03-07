@@ -57,8 +57,8 @@ RSpec.shared_examples 'DELETE /:id' do
 
     describe '403 error' do
       describe 'Session ID not allowed' do
-        let!(:another_account) { create(:another_account) }
-        let!(:another_session) { create(:another_session, account: another_account) }
+        let!(:another_account) { create(:account) }
+        let!(:another_session) { create(:session, account: another_account) }
 
         before do
           get '/campaigns/campaign_id', {token: 'test_token', app_key: 'test_key', session_id: another_session.token}
@@ -94,8 +94,8 @@ RSpec.shared_examples 'DELETE /:id' do
       end
 
       describe 'Campaign not found error' do
-        let!(:another_account) { create(:another_account) }
-        let!(:another_session) { create(:another_session, account: another_account) }
+        let!(:another_account) { create(:account) }
+        let!(:another_session) { create(:session, account: another_account) }
 
         before do
           delete '/campaigns/any_other_id', {token: 'test_token', app_key: 'test_key', session_id: another_session.token}

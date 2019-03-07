@@ -215,7 +215,7 @@ RSpec.shared_examples 'POST /:id/commands' do
 
           describe '403 error' do
             describe 'Session ID not allowed' do
-              let!(:another_account) { create(:another_account) }
+              let!(:another_account) { create(:account) }
               let!(:session) { create(:session, account: another_account) }
 
               before do
