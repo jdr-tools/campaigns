@@ -10,7 +10,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
       after :each do
         delete "/campaigns/#{campaign.id}/files/#{file.id}", {
           session_id: session.token,
-          app_key: 'test_key',
+          app_key: appli.key,
           token: 'test_token'
         }
       end
@@ -19,7 +19,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
         before do
           get "/campaigns/#{campaign.id}/files/#{file.id}", {
             session_id: session.token,
-            app_key: 'test_key',
+            app_key: appli.key,
             token: 'test_token'
           }
         end
@@ -42,7 +42,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
             before do
               get "/campaigns/#{campaign.id}/files/#{file.id}", {
                 session_id: other_session.token,
-                app_key: 'test_key',
+                app_key: appli.key,
                 token: 'test_token'
               }
             end
@@ -63,7 +63,7 @@ RSpec.shared_examples 'GET /:id/files/:file_id' do
             before do
               get "/campaigns/#{campaign.id}/files/unknown_file_id", {
                 session_id: session.token,
-                app_key: 'test_key',
+                app_key: appli.key,
                 token: 'test_token'
               }
             end

@@ -10,7 +10,7 @@ RSpec.shared_examples 'GET /creations' do
 
     describe 'Nominal case' do
       before do
-        get '/campaigns/creations', {token: 'test_token', app_key: 'test_key', session_id: session.token}
+        get '/campaigns/creations', {token: 'test_token', app_key: appli.key, session_id: session.token}
       end
       it 'Returns a 200 (OK) status' do
         expect(last_response.status).to be 200
@@ -21,7 +21,7 @@ RSpec.shared_examples 'GET /creations' do
           'items' => [
             {
               'id' => campaign.id.to_s,
-              'title' => 'test_title',
+              'title' => campaign.title,
               'description' => 'A longer description of the campaign',
               'creator' => {
                 'id' => account.id.to_s,
@@ -55,7 +55,7 @@ RSpec.shared_examples 'GET /creations' do
     describe '400 errors' do
       describe 'session ID not given' do
         before do
-          get '/campaigns/creations', {token: 'test_token', app_key: 'test_key'}
+          get '/campaigns/creations', {token: 'test_token', app_key: appli.key}
         end
         it 'Raises a Bad Request (400) error' do
           expect(last_response.status).to be 400
@@ -73,7 +73,7 @@ RSpec.shared_examples 'GET /creations' do
     describe '404 errors' do
       describe 'session ID not found' do
         before do
-          get '/campaigns/creations', {token: 'test_token', app_key: 'test_key', session_id: 'unknown_session_id'}
+          get '/campaigns/creations', {token: 'test_token', app_key: appli.key, session_id: 'unknown_session_id'}
         end
         it 'Raises a Not Found (404)) error' do
           expect(last_response.status).to be 404

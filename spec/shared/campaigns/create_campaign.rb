@@ -4,7 +4,7 @@ RSpec.shared_examples 'POST /' do
       before do
         post '/campaigns', {
           token: 'test_token',
-          app_key: 'test_key',
+          app_key: appli.key,
           title: 'some title',
           description: 'test',
           is_private: true,
@@ -61,7 +61,7 @@ RSpec.shared_examples 'POST /' do
 
     describe 'when no tags are given' do
       before do
-        post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'some title', is_private: true, creator_id: account.id.to_s}
+        post '/campaigns', {token: 'test_token', app_key: appli.key, title: 'some title', is_private: true, creator_id: account.id.to_s}
       end
       it 'has correctly created a campaign' do
         expect(Arkaan::Campaign.all.count).to be 1
@@ -76,7 +76,7 @@ RSpec.shared_examples 'POST /' do
 
     describe 'when the privacy flag is given as a string' do
       before do
-        post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'some title', is_private: 'true', creator_id: account.id.to_s}
+        post '/campaigns', {token: 'test_token', app_key: appli.key, title: 'some title', is_private: 'true', creator_id: account.id.to_s}
       end
       it 'has correctly created a campaign' do
         expect(Arkaan::Campaign.all.count).to be 1
@@ -91,7 +91,7 @@ RSpec.shared_examples 'POST /' do
 
     describe 'when the privacy flag is given at false' do
       before do
-        post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'some title', is_private: false, creator_id: account.id.to_s}
+        post '/campaigns', {token: 'test_token', app_key: appli.key, title: 'some title', is_private: false, creator_id: account.id.to_s}
       end
       it 'has correctly created a campaign' do
         expect(Arkaan::Campaign.all.count).to be 1
@@ -106,7 +106,7 @@ RSpec.shared_examples 'POST /' do
 
     describe 'when the privacy flag is given as a string at false' do
       before do
-        post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'some title', is_private: 'false', creator_id: account.id.to_s}
+        post '/campaigns', {token: 'test_token', app_key: appli.key, title: 'some title', is_private: 'false', creator_id: account.id.to_s}
       end
       it 'has correctly created a campaign' do
         expect(Arkaan::Campaign.all.count).to be 1
@@ -123,7 +123,7 @@ RSpec.shared_examples 'POST /' do
       before do
         post '/campaigns', {
           token: 'test_token',
-          app_key: 'test_key',
+          app_key: appli.key,
           title: 'some title',
           description: 'test',
           is_private: true,
@@ -150,7 +150,7 @@ RSpec.shared_examples 'POST /' do
     describe 'bad requests errors' do
       describe 'Campaign title not given error' do
         before do
-          post '/campaigns', {token: 'test_token', app_key: 'test_key', description: 'test', is_private: true, creator_id: account.id.to_s}
+          post '/campaigns', {token: 'test_token', app_key: appli.key, description: 'test', is_private: true, creator_id: account.id.to_s}
         end
         it 'returns a Bad Request (400) error when not giving the campaign title' do
           expect(last_response.status).to be 400
@@ -169,7 +169,7 @@ RSpec.shared_examples 'POST /' do
 
       describe 'Campaign title too short' do
         before do
-          post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'a', is_private: true, creator_id: account.id.to_s}
+          post '/campaigns', {token: 'test_token', app_key: appli.key, title: 'a', is_private: true, creator_id: account.id.to_s}
         end
         it 'returns an Bad Request (400) error when the title is too short' do
           expect(last_response.status).to be 400
@@ -188,8 +188,8 @@ RSpec.shared_examples 'POST /' do
 
       describe 'campaign title already taken' do
         before do
-          create(:campaign, title: 'test_title', creator: account)
-          post '/campaigns', {token: 'test_token', app_key: 'test_key', title: 'test_title', creator_id: account.id.to_s}
+          _campaign = create(:campaign, creator: account)
+          post '/campaigns', {token: 'test_token', app_key: appli.key, title: _campaign.title, creator_id: account.id.to_s}
         end
         it 'returns an Bad Request (400) error when the title is already used' do
           expect(last_response.status).to be 400

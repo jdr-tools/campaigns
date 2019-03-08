@@ -8,7 +8,7 @@ RSpec.shared_examples 'PUT /:id' do
 
       describe 'nothing being updated' do
         before do
-          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', session_id: session.token}
+          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, session_id: session.token}
         end
         it 'returns a OK (200) response code when updating nothing' do
           expect(last_response.status).to be 200
@@ -17,10 +17,10 @@ RSpec.shared_examples 'PUT /:id' do
           expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
         end
         describe 'campaign parameters' do
-          let!(:updated_campaign) { Arkaan::Campaign.where(id: 'campaign_id').first }
+          let!(:updated_campaign) { Arkaan::Campaign.where(id: campaign.id).first }
 
           it 'has not changed the title of the campaign' do
-            expect(updated_campaign.title).to eq 'test_title'
+            expect(updated_campaign.title).to eq campaign.title
           end
           it 'has not changed the description of the campaign' do
             expect(updated_campaign.description).to eq 'A longer description of the campaign'
@@ -38,7 +38,7 @@ RSpec.shared_examples 'PUT /:id' do
       end
       describe 'update of the title' do
         before do
-          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', title: 'another random title', session_id: session.token}
+          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, title: 'another random title', session_id: session.token}
         end
         it 'returns a OK (200) response code when updating the title' do
           expect(last_response.status).to be 200
@@ -47,12 +47,12 @@ RSpec.shared_examples 'PUT /:id' do
           expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
         end
         it 'has correctly updated the title of the campaign' do
-          expect(Arkaan::Campaign.where(id: 'campaign_id').first.title).to eq 'another random title'
+          expect(Arkaan::Campaign.where(id: campaign.id).first.title).to eq 'another random title'
         end
       end
       describe 'update of the description' do
         before do
-          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', description: 'another long description', session_id: session.token}
+          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, description: 'another long description', session_id: session.token}
         end
         it 'returns a OK (200) response code when updating the description' do
           expect(last_response.status).to be 200
@@ -61,12 +61,12 @@ RSpec.shared_examples 'PUT /:id' do
           expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
         end
         it 'has correctly updated the description of the campaign' do
-          expect(Arkaan::Campaign.where(id: 'campaign_id').first.description).to eq 'another long description'
+          expect(Arkaan::Campaign.where(id: campaign.id).first.description).to eq 'another long description'
         end
       end
       describe 'update of the privacy' do
         before do
-          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', is_private: false, session_id: session.token}
+          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, is_private: false, session_id: session.token}
         end
         it 'returns a OK (200) response code when updating the privacy' do
           expect(last_response.status).to be 200
@@ -75,12 +75,12 @@ RSpec.shared_examples 'PUT /:id' do
           expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
         end
         it 'has correctly updated the privacy of the campaign' do
-          expect(Arkaan::Campaign.where(id: 'campaign_id').first.is_private).to be false
+          expect(Arkaan::Campaign.where(id: campaign.id).first.is_private).to be false
         end
       end
       describe 'update of the max players' do
         before do
-          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', max_players: 10, session_id: session.token}
+          put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, max_players: 10, session_id: session.token}
         end
         it 'returns a OK (200) response code when updating the privacy' do
           expect(last_response.status).to be 200
@@ -89,13 +89,13 @@ RSpec.shared_examples 'PUT /:id' do
           expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
         end
         it 'has correctly updated the privacy of the campaign' do
-          expect(Arkaan::Campaign.where(id: 'campaign_id').first.max_players).to be 10
+          expect(Arkaan::Campaign.where(id: campaign.id).first.max_players).to be 10
         end
       end
       describe 'update of the tags' do
         describe 'update with an empty tags list' do
           before do
-            put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', tags: [], session_id: session.token}
+            put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, tags: [], session_id: session.token}
           end
           it 'returns a OK (200) response code when updating the tags' do
             expect(last_response.status).to be 200
@@ -104,7 +104,7 @@ RSpec.shared_examples 'PUT /:id' do
             expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
           end
           it 'has correctly updated the tags of the campaign' do
-            expect(Arkaan::Campaign.where(id: 'campaign_id').first.tags).to eq []
+            expect(Arkaan::Campaign.where(id: campaign.id).first.tags).to eq []
           end
           it 'has deleted the tags counters not used anymore' do
             expect(Arkaan::Campaigns::Tag.all.count).to be 0
@@ -112,7 +112,7 @@ RSpec.shared_examples 'PUT /:id' do
         end
         describe 'update with another tags list' do
           before do
-            put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: 'test_key', tags: ['random_tag'], session_id: session.token}
+            put "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, tags: ['random_tag'], session_id: session.token}
           end
           it 'returns a OK (200) response code when updating the tags' do
             expect(last_response.status).to be 200
@@ -121,7 +121,7 @@ RSpec.shared_examples 'PUT /:id' do
             expect(JSON.parse(last_response.body)).to eq({'message' => 'updated'})
           end
           it 'has correctly updated the tags of the campaign' do
-            expect(Arkaan::Campaign.where(id: 'campaign_id').first.tags).to eq ['random_tag']
+            expect(Arkaan::Campaign.where(id: campaign.id).first.tags).to eq ['random_tag']
           end
           it 'has left only one counter for tags' do
             expect(Arkaan::Campaigns::Tag.all.count).to be 1
@@ -141,7 +141,7 @@ RSpec.shared_examples 'PUT /:id' do
     describe '400 errors' do
       describe 'session ID not given' do
         before do
-          put '/campaigns/campaign_id', {token: 'test_token', app_key: 'test_key', title: 'another title'}
+          put "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, title: 'another title'}
         end
         it 'returns an Unprocessable Entity (400) response code when updating with an already used title' do
           expect(last_response.status).to be 400
@@ -160,7 +160,7 @@ RSpec.shared_examples 'PUT /:id' do
         let!(:other_campaign) { create(:campaign, id: 'another_campaign_id', title: 'another title', creator: account) }
 
         before do
-          put '/campaigns/campaign_id', {token: 'test_token', app_key: 'test_key', title: 'another title', session_id: session.token}
+          put "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, title: 'another title', session_id: session.token}
         end
         it 'returns an 400 status' do
           expect(last_response.status).to be 400
@@ -181,7 +181,7 @@ RSpec.shared_examples 'PUT /:id' do
         let!(:another_session) { create(:session, account: another_account) }
 
         before do
-          get '/campaigns/campaign_id', {token: 'test_token', app_key: 'test_key', session_id: another_session.token}
+          get "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, session_id: another_session.token}
         end
         it 'Returns a 403 error' do
           expect(last_response.status).to be 403
@@ -199,7 +199,7 @@ RSpec.shared_examples 'PUT /:id' do
     describe '404 errors' do
       describe 'Campaign not found' do
         before do
-          put '/campaigns/fake_campaign_id', {token: 'test_token', app_key: 'test_key', session_id: session.token}
+          put '/campaigns/fake_campaign_id', {token: 'test_token', app_key: appli.key, session_id: session.token}
         end
         it 'correctly returns a Not Found (404) error when the campaign you want to update does not exist' do
           expect(last_response.status).to be 404
@@ -215,7 +215,7 @@ RSpec.shared_examples 'PUT /:id' do
 
       describe 'Session not found' do
         before do
-          put '/campaigns/campaign_id', {token: 'test_token', app_key: 'test_key', session_id: 'unknown_token'}
+          put "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, session_id: 'unknown_token'}
         end
         it 'correctly returns a Not Found (404) error when the campaign you want to update does not exist' do
           expect(last_response.status).to be 404

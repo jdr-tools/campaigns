@@ -4,7 +4,7 @@ RSpec.describe Controllers::Files do
 
   let!(:account) { create(:account) }
   let!(:gateway) { create(:gateway) }
-  let!(:application) { create(:application, creator: account) }
+  let!(:appli) { create(:application, creator: account) }
   let!(:session) { create(:session, account: account) }
 
   def app; Controllers::Files.new; end

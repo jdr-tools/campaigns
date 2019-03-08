@@ -6,7 +6,7 @@ RSpec.describe Controllers::Campaigns do
 
   let!(:account) { create(:account) }
   let!(:gateway) { create(:gateway) }
-  let!(:application) { create(:application, creator: account) }
+  let!(:appli) { create(:application, creator: account) }
 
   def app
     Controllers::Campaigns.new

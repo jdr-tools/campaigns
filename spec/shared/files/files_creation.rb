@@ -15,7 +15,7 @@ RSpec.shared_examples 'POST /:id/files' do
       before do
         post url, {
           session_id: session.token,
-          app_key: 'test_key',
+          app_key: appli.key,
           token: 'test_token',
           name: 'test.txt',
           content: content
@@ -66,7 +66,7 @@ RSpec.shared_examples 'POST /:id/files' do
           before do
             post url,{
               session_id: session.token,
-              app_key: 'test_key',
+              app_key: appli.key,
               token: 'test_token',
               name: 'test.txt'
             }
@@ -89,7 +89,7 @@ RSpec.shared_examples 'POST /:id/files' do
           before do
             post url, {
               session_id: session.token,
-              app_key: 'test_key',
+              app_key: appli.key,
               token: 'test_token',
               size: 30,
               content: content
@@ -113,7 +113,7 @@ RSpec.shared_examples 'POST /:id/files' do
           before do
             post url, {
               session_id: session.token,
-              app_key: 'test_key',
+              app_key: appli.key,
               token: 'test_token',
               size: 30,
               name: 'test.txt',
@@ -145,7 +145,7 @@ RSpec.shared_examples 'POST /:id/files' do
           before do
             post url, {
               session_id: other_session.token,
-              app_key: 'test_key',
+              app_key: appli.key,
               token: 'test_token',
               name: 'test.txt',
               content: content

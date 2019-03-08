@@ -20,7 +20,7 @@ RSpec.shared_examples 'PUT /:id/files/:file_id' do
     # @param custom_url [Boolean, String] leave empty to use the default URL, or pass a custom URL to use it.
     def modify_permissions(permissions = [], custom_url = false)
       _url = custom_url ? custom_url : "/campaigns/#{campaign.id}/files/#{perm_file.id}"
-      put _url, {session_id: session.token, token: 'test_token', app_key: 'test_key', permissions: permissions}
+      put _url, {session_id: session.token, token: 'test_token', app_key: appli.key, permissions: permissions}
     end
 
     describe 'when adding a permission' do

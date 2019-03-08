@@ -20,7 +20,7 @@ RSpec.shared_examples 'GET /:id/files' do
         let!(:permission) { create(:permission, invitation: player_invitation, file: file) }
 
         before do
-          get url, {session_id: player_session.token, app_key: 'test_key', token: 'test_token'}
+          get url, {session_id: player_session.token, app_key: appli.key, token: 'test_token'}
         end
 
         it 'Returns a OK (200) status code' do
@@ -42,7 +42,7 @@ RSpec.shared_examples 'GET /:id/files' do
 
       context 'The player does not have access to the file' do
         before do
-          get url, {session_id: player_session.token, app_key: 'test_key', token: 'test_token'}
+          get url, {session_id: player_session.token, app_key: appli.key, token: 'test_token'}
         end
 
         it 'Returns a OK (200) status code' do
@@ -57,7 +57,7 @@ RSpec.shared_examples 'GET /:id/files' do
     describe '403 errors' do
       describe 'account not authorized' do
         before do
-          get url, {session_id: session.token, app_key: 'test_key', token: 'test_token',}
+          get url, {session_id: session.token, app_key: appli.key, token: 'test_token',}
         end
         it 'Returns a Forbidden (403) status code' do
           expect(last_response.status).to be 403
