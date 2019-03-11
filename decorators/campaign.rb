@@ -8,7 +8,7 @@ module Decorators
       tags.each do |tag|
         tag_object = Arkaan::Campaigns::Tag.where(content: tag).first
         if tag_object.nil?
-          Arkaan::Campaigns::Tag.create(content: tag)
+          Arkaan::Campaigns::Tag.create(content: tag, count: 1)
         else
           tag_object.count = tag_object.count + 1
           tag_object.save

@@ -10,7 +10,7 @@ RSpec.shared_examples 'DELETE /:id/files/:file_id' do
         delete "/campaigns/#{campaign.id}/files/#{file.id}", {
           session_id: session.token,
           app_key: appli.key,
-          token: 'test_token'
+          token: gateway.token
         }
         campaign.reload
       end
@@ -37,7 +37,7 @@ RSpec.shared_examples 'DELETE /:id/files/:file_id' do
             delete "/campaigns/#{campaign.id}/files/unknown_file", {
               session_id: session.token,
               app_key: appli.key,
-              token: 'test_token'
+              token: gateway.token
             }
           end
           it 'Returns a Not Found (404) status code' do
@@ -63,7 +63,7 @@ RSpec.shared_examples 'DELETE /:id/files/:file_id' do
             delete "/campaigns/#{campaign.id}/files/#{file.id}", {
               session_id: other_session.token,
               app_key: appli.key,
-              token: 'test_token'
+              token: gateway.token
             }
           end
           it 'Returns a Forbidden (403) status code' do

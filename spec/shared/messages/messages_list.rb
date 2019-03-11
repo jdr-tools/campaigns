@@ -12,7 +12,7 @@ RSpec.shared_examples 'GET /:id/messages' do
 
     describe 'Nominal case' do
       before do
-        get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'Returns a OK (200) status code' do
         expect(last_response.status).to be 200
@@ -54,7 +54,7 @@ RSpec.shared_examples 'GET /:id/messages' do
 
         describe 'For the sender of the message' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: third_session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: third_session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -77,7 +77,7 @@ RSpec.shared_examples 'GET /:id/messages' do
         end
         describe 'For another player' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -100,7 +100,7 @@ RSpec.shared_examples 'GET /:id/messages' do
         end
         describe 'For the game master' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: admin_session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: admin_session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -139,7 +139,7 @@ RSpec.shared_examples 'GET /:id/messages' do
 
         describe 'For the sender of the message' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: third_session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: third_session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -162,7 +162,7 @@ RSpec.shared_examples 'GET /:id/messages' do
         end
         describe 'For another player' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -173,7 +173,7 @@ RSpec.shared_examples 'GET /:id/messages' do
         end
         describe 'For the game master' do
           before do
-            get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: admin_session.token}
+            get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: admin_session.token}
           end
           it 'Returns a 200 (OK) status code' do
             expect(last_response.status).to be 200
@@ -202,7 +202,7 @@ RSpec.shared_examples 'GET /:id/messages' do
     describe '400 errors' do
       describe 'session ID not given' do
         before do
-          get '/campaigns/campaign_id/messages', {token: 'test_token', app_key: appli.key}
+          get '/campaigns/campaign_id/messages', {token: gateway.token, app_key: appli.key}
         end
         it 'Returns a Bad Request (400) status' do
           expect(last_response.status).to be 400
@@ -223,7 +223,7 @@ RSpec.shared_examples 'GET /:id/messages' do
         let!(:other_session) { create(:session, account: third_account, token: 'truite violette') }
 
         before do
-          get "/campaigns/#{campaign.id.to_s}/messages", {token: 'test_token', app_key: appli.key, session_id: other_session.token}
+          get "/campaigns/#{campaign.id.to_s}/messages", {token: gateway.token, app_key: appli.key, session_id: other_session.token}
         end
         it 'Returns a 403 error' do
           expect(last_response.status).to be 403

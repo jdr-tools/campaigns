@@ -1,6 +1,6 @@
 RSpec.shared_examples 'Getting a campaign' do
   before do
-    get "/campaigns/#{campaign.id.to_s}", {token: 'test_token', app_key: appli.key, session_id: session.token}
+    get "/campaigns/#{campaign.id.to_s}", {token: gateway.token, app_key: appli.key, session_id: session.token}
   end
   it 'returns a OK (200) response code when successfully getting a camapign' do
     expect(last_response.status).to be 200
@@ -53,7 +53,7 @@ RSpec.shared_examples 'GET /:id' do
     describe '400 errors' do
       describe 'session ID not given' do
         before do
-          get "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key}
+          get "/campaigns/#{campaign.id}", {token: gateway.token, app_key: appli.key}
         end
         it 'Returns a Bad Request (400) status' do
           expect(last_response.status).to be 400
@@ -74,7 +74,7 @@ RSpec.shared_examples 'GET /:id' do
         let!(:session) { create(:session, account: another_account) }
 
         before do
-          get "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, session_id: session.token}
+          get "/campaigns/#{campaign.id}", {token: gateway.token, app_key: appli.key, session_id: session.token}
         end
         it 'Returns a 403 error' do
           expect(last_response.status).to be 403
@@ -94,7 +94,7 @@ RSpec.shared_examples 'GET /:id' do
         let!(:session) { create(:session, account: account) }
         
         before do
-          get "/campaigns/unknown", {token: 'test_token', app_key: appli.key, session_id: session.token}
+          get "/campaigns/unknown", {token: gateway.token, app_key: appli.key, session_id: session.token}
         end
         it 'Returns a Not Found (404) status' do
           expect(last_response.status).to be 404
@@ -112,7 +112,7 @@ RSpec.shared_examples 'GET /:id' do
         let!(:session) { create(:session, account: account) }
         
         before do
-          get "/campaigns/#{campaign.id}", {token: 'test_token', app_key: appli.key, session_id: 'fake_token'}
+          get "/campaigns/#{campaign.id}", {token: gateway.token, app_key: appli.key, session_id: 'fake_token'}
         end
         it 'Returns a Not Found (404) status' do
           expect(last_response.status).to be 404

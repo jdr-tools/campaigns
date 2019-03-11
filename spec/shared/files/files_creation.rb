@@ -16,7 +16,7 @@ RSpec.shared_examples 'POST /:id/files' do
         post url, {
           session_id: session.token,
           app_key: appli.key,
-          token: 'test_token',
+          token: gateway.token,
           name: 'test.txt',
           content: content
         }
@@ -67,7 +67,7 @@ RSpec.shared_examples 'POST /:id/files' do
             post url,{
               session_id: session.token,
               app_key: appli.key,
-              token: 'test_token',
+              token: gateway.token,
               name: 'test.txt'
             }
           end
@@ -90,7 +90,7 @@ RSpec.shared_examples 'POST /:id/files' do
             post url, {
               session_id: session.token,
               app_key: appli.key,
-              token: 'test_token',
+              token: gateway.token,
               size: 30,
               content: content
             }
@@ -114,7 +114,7 @@ RSpec.shared_examples 'POST /:id/files' do
             post url, {
               session_id: session.token,
               app_key: appli.key,
-              token: 'test_token',
+              token: gateway.token,
               size: 30,
               name: 'test.txt',
               content: invalid_content
@@ -146,7 +146,7 @@ RSpec.shared_examples 'POST /:id/files' do
             post url, {
               session_id: other_session.token,
               app_key: appli.key,
-              token: 'test_token',
+              token: gateway.token,
               name: 'test.txt',
               content: content
             }

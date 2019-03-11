@@ -6,7 +6,7 @@ RSpec.shared_examples 'DELETE /:id/messages/:message_id' do
 
     describe 'Nominal case' do
       before do
-        delete "/campaigns/#{campaign.id.to_s}/messages/#{message.id.to_s}", {token: 'test_token', app_key: appli.key, session_id: session.token}
+        delete "/campaigns/#{campaign.id.to_s}/messages/#{message.id.to_s}", {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'Returns a OK (200) status code' do
         expect(last_response.status).to be 200
@@ -29,7 +29,7 @@ RSpec.shared_examples 'DELETE /:id/messages/:message_id' do
         let!(:other_session) { create(:session, account: other_account, token: 'any other token') }
 
         before do
-          delete "/campaigns/#{campaign.id.to_s}/messages/#{message.id.to_s}", {token: 'test_token', app_key: appli.key, session_id: other_session.token}
+          delete "/campaigns/#{campaign.id.to_s}/messages/#{message.id.to_s}", {token: gateway.token, app_key: appli.key, session_id: other_session.token}
         end
         it 'Returns a Forbidden (403) status' do
           expect(last_response.status).to be 403
@@ -47,7 +47,7 @@ RSpec.shared_examples 'DELETE /:id/messages/:message_id' do
     describe '404 errors' do
       describe 'When the campaign does not exist' do
         before do
-          delete "/campaigns/unknown/messages/#{message.id.to_s}", {token: 'test_token', app_key: appli.key, session_id: session.token}
+          delete "/campaigns/unknown/messages/#{message.id.to_s}", {token: gateway.token, app_key: appli.key, session_id: session.token}
         end
         it 'Returns a Not found (404) status' do
           expect(last_response.status).to be 404
@@ -62,7 +62,7 @@ RSpec.shared_examples 'DELETE /:id/messages/:message_id' do
       end
       describe 'When the message does not exist' do
         before do
-          delete "/campaigns/#{campaign.id.to_s}/messages/unknown", {token: 'test_token', app_key: appli.key, session_id: session.token}
+          delete "/campaigns/#{campaign.id.to_s}/messages/unknown", {token: gateway.token, app_key: appli.key, session_id: session.token}
         end
         it 'Returns a Not found (404) status' do
           expect(last_response.status).to be 404

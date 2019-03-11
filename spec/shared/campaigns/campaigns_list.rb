@@ -12,7 +12,7 @@ RSpec.shared_examples 'GET /' do
 
     describe 'Campaign without invitation' do
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -23,17 +23,17 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => nil,
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -43,7 +43,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:pending_invitation, campaign: 'other_campaign_id', account: account) }
 
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -54,11 +54,11 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => {
                 'id' => invitation.id.to_s,
@@ -68,7 +68,7 @@ RSpec.shared_examples 'GET /' do
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -78,7 +78,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:request_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -89,11 +89,11 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => {
                 'id' => invitation.id.to_s,
@@ -103,7 +103,7 @@ RSpec.shared_examples 'GET /' do
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -113,7 +113,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:accepted_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -124,11 +124,11 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => {
                 'id' => invitation.id.to_s,
@@ -138,7 +138,7 @@ RSpec.shared_examples 'GET /' do
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 1,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -148,7 +148,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:left_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -159,17 +159,17 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => nil,
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -179,7 +179,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:expelled_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -190,17 +190,17 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => nil,
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -210,7 +210,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:refused_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -221,17 +221,17 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => nil,
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })
@@ -242,7 +242,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:blocked_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -256,7 +256,7 @@ RSpec.shared_examples 'GET /' do
       let!(:invitation) { create(:ignored_invitation, campaign: 'other_campaign_id', account: account) }
       
       before do
-        get '/campaigns', {token: 'test_token', app_key: appli.key, session_id: session.token}
+        get '/campaigns', {token: gateway.token, app_key: appli.key, session_id: session.token}
       end
       it 'correctly returns a OK (200) status' do
         expect(last_response.status).to be 200
@@ -267,11 +267,11 @@ RSpec.shared_examples 'GET /' do
           'items' => [
             {
               'id' => other_campaign.id.to_s,
-              'title' => 'another title',
-              'description' => 'A longer description of the campaign',
+              'title' => other_campaign.title,
+              'description' => other_campaign.description,
               'creator' => {
                 'id' => other_account.id.to_s,
-                'username' => 'other_username'
+                'username' => other_account.username
               },
               'invitation' => {
                 'id' => invitation.id.to_s,
@@ -281,7 +281,7 @@ RSpec.shared_examples 'GET /' do
               'is_private' => false,
               'max_players' => 5,
               'current_players' => 0,
-              'tags' => ['test_tag']
+              'tags' => other_campaign.tags
             }
           ]
         })

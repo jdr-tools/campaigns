@@ -39,7 +39,7 @@ module Services
     # @return [Boolean] TRUE if the deletion has been successfully done, FALSE otherwise.
     def delete(campaign)
       campaign.files.pluck(:_id).each do |file|
-          Services::Files.instance.delete_campaign_file(campaign, file_id)
+        Services::Files.instance.delete_campaign_file(campaign, file_id)
       end
       campaign.invitations.each do |invitation|
         invitation.delete

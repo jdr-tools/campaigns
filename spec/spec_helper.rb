@@ -1,5 +1,10 @@
 ENV['RACK_ENV'] = 'test'
 
+if !ENV.has_key?('AWS_ACCESS_KEY_ID') || !ENV.has_key?('AWS_SECRET_ACCESS_KEY')
+  puts "Il semblerait que les variables d'environnements Amazon n'aient pas été chargé, tente un 'source .env' pour voir ?"
+  exit
+end
+
 require 'bundler'
 Bundler.require :test
 
