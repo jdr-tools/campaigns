@@ -827,7 +827,7 @@ GEM
       request_store (>= 1.0)
     erubi (1.8.0)
     erubis (2.7.0)
-    excon (0.69.1)
+    excon (0.71.0)
     factory_girl (4.8.1)
       activesupport (>= 3.0.0)
     faker (1.9.3)
